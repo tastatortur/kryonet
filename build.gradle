@@ -1,18 +1,39 @@
 apply plugin: "java-library"
 apply plugin: 'maven-publish'
 
-version '2.22.8'
+version = '2.22.8'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
+    maven { url = "https://jitpack.io" }
 }
 
 test {
     useJUnitPlatform()
+
+    // Kryo needs reflective access to java.lang internals (e.g. Throwable#backtrace)
+    // to serialize exceptions for RMI. Required on JDK 16+ due to strong encapsulation.
+    jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+
+    // kryonet has a long-standing, unresolved NIO selector race condition where
+    // Server/Client bind()/connect()/close() can intermittently starve against the
+    // update loop's selector.select() call (see
+    // https://github.com/EsotericSoftware/kryonet/issues/142 and
+    // https://github.com/crykn/kryonet/issues/7). When this happens, the blocked
+    // thread cannot be released by interruption alone, and the tests use fixed
+    // ports, so a stuck test would otherwise poison every subsequent test in the
+    // same JVM with "Address already in use" failures.
+    //
+    // Mitigation (not a fix): run each test class in its own forked JVM so a hang
+    // can't contaminate other tests, and hard-kill the whole test task if it still
+    // runs too long overall.
+    forkEvery = 1
+    timeout = Duration.ofMinutes(10)
 
     testLogging {
         events "passed", "skipped", "failed", "standardError"
@@ -28,11 +49,12 @@ tasks.withType(Test) {
 }
 
 dependencies {
-    implementation "com.github.esotericsoftware:jsonbeans:c3520fcc51" // = 0.10
+    implementation "com.github.esotericsoftware:jsonbeans:eb99f49726" // = 0.10 + Java 8 update
     api "com.esotericsoftware:kryo:5.6.2"
 
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.2"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.12.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.12.2"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.12.2"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -48,16 +70,16 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 javadoc {
     options {
         addBooleanOption('author', true)
-        links "https://docs.oracle.com/en/java/javase/17/docs/api/"
+        links "https://docs.oracle.com/en/java/javase/21/docs/api/"
     }
 }
 
 publishing {
     publications {
         plugin(MavenPublication) { publication ->
-            groupId 'com.github.crykn'
-            artifactId project.archivesBaseName
-            version project.version
+            groupId = 'com.github.crykn'
+            artifactId = base.archivesName.get()
+            version = project.version
 
             from components['java']
 
