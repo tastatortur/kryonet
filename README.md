@@ -7,14 +7,16 @@ A fork of [KryoNet](https://github.com/EsotericSoftware/kryonet/), a Java librar
 This fork was specifically made for [ProjektGG](https://github.com/eskalon/ProjektGG), but also adds the most demanded features on KryoNet's issue tracker. If you have a pull request for KryoNet also consider adding it here, as KryoNet had its last release [in 2013](https://github.com/EsotericSoftware/kryonet/releases).
 
 ## Key Changes
-* [Kryo 5](https://github.com/EsotericSoftware/kryo/releases/) is used for the serialization (for a list of changes and new features since Kryo 3 see [here](https://groups.google.com/forum/#!msg/kryo-users/sBZ10dwrwFQ/hb6FF5ZXCQAJ); takes care of [#77](https://github.com/EsotericSoftware/kryonet/issues/77) and [#123](https://github.com/EsotericSoftware/kryonet/issues/123))
+* [Kryo 5.6.2](https://github.com/EsotericSoftware/kryo/releases/) is used for the serialization (for a list of changes and new features since Kryo 3 see [here](https://groups.google.com/forum/#!msg/kryo-users/sBZ10dwrwFQ/hb6FF5ZXCQAJ); takes care of [#77](https://github.com/EsotericSoftware/kryonet/issues/77) and [#123](https://github.com/EsotericSoftware/kryonet/issues/123))
+* Dependencies updated: jsonbeans (with Java 8 compatibility fixes), JUnit 5.12.2, Gradle 9.6.1
 * `Listener` is now an interface ([#39](https://github.com/EsotericSoftware/kryonet/issues/39)) with empty default methods, which helps to reduce boilerplate code
 * Includes a fix for the common Android 5.0 crash ([#106](https://github.com/EsotericSoftware/kryonet/issues/106), [#111](https://github.com/EsotericSoftware/kryonet/issues/111), [#120](https://github.com/EsotericSoftware/kryonet/issues/120)), toggleable by `UdpConnection#androidFixDisabled`
 * The LAN Host Discovery was improved and is now available to Non-Kryo-Serializations ([#127](https://github.com/EsotericSoftware/kryonet/issues/127))
 * A [TypeListener](#typelisteners) was added for easier message handling (takes care of [#130](https://github.com/EsotericSoftware/kryonet/issues/130))
 * Various improvements to the javadoc (especially [#35](https://github.com/EsotericSoftware/kryonet/issues/35), [#44](https://github.com/EsotericSoftware/kryonet/issues/44), [#124](https://github.com/EsotericSoftware/kryonet/issues/124), [#137](https://github.com/EsotericSoftware/kryonet/issues/137)); helps to reduce the most common developer mistakes
-* KryoNet now uses a [gradle](https://gradle.org/) build setup
-* Java 8+ is supported
+* KryoNet now uses a [gradle](https://gradle.org/) build setup (Groovy DSL updated for Gradle 10 compatibility)
+* Java 21+ is supported (was 8+)
+* Added `forkEvery = 1` and per-test timeout to mitigate known NIO selector race condition ([#7](https://github.com/crykn/kryonet/issues/7))
 * All the commits made on the main repo since the last release in 2013 ([#52](https://github.com/EsotericSoftware/kryonet/issues/52), [#98](https://github.com/EsotericSoftware/kryonet/issues/98), [#105](https://github.com/EsotericSoftware/kryonet/issues/105)) and a lot more minor fixes and changes ([#109](https://github.com/EsotericSoftware/kryonet/issues/109#issuecomment-643352317) amongst others); the documentation (see below) was updated as well
 
 A more in-depth changelog is available on the [releases](https://github.com/crykn/kryonet/releases) page.
@@ -322,7 +324,7 @@ allprojects {
 }
 	
 dependencies {
-   compile 'com.github.crykn:kryonet:2.22.8'
+   implementation 'com.github.crykn:kryonet:3.0.0'
 }
 ```
 
@@ -336,10 +338,3 @@ Beyond this documentation page, you may find the following links useful:
    - [Advanced chat server using RMI](examples/com/esotericsoftware/kryonet/examples/chatrmi) (Remote Method Invocation)
    - [A simple "game server"](examples/com/esotericsoftware/kryonet/examples/position) (proof of concept) updating the position of clients
 - [Unit tests](src/test/java/com/esotericsoftware/kryonet)
-
-## Recent Changes
-
-* Version 3.0.0 — Java 8→21 (JDK 21 target) is a breaking change
-* Dependencies upgraded: Kryo 5.5.0→5.6.2, jsonbeans pin updated with Java 8 fixes, JUnit 5.9.2→5.12.2, Gradle wrapper 7.6→9.6.1
-* Gradle Groovy DSL fixed for compatibility with Gradle 10
-* Added `forkEvery = 1` and per-test timeout to mitigate known NIO selector race condition ([#7](https://github.com/crykn/kryonet/issues/7))
