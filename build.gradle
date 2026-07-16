@@ -77,7 +77,7 @@ javadoc {
 publishing {
     publications {
         plugin(MavenPublication) { publication ->
-            groupId = 'com.github.crykn'
+            groupId = 'com.github.tastatortur'
             artifactId = base.archivesName.get()
             version = project.version
 
