@@ -339,7 +339,7 @@ Beyond this documentation page, you may find the following links useful:
 
 ## Recent Changes
 
+* Version 3.0.0 — Java 8→21 (JDK 21 target) is a breaking change
 * Dependencies upgraded: Kryo 5.5.0→5.6.2, jsonbeans pin updated with Java 8 fixes, JUnit 5.9.2→5.12.2, Gradle wrapper 7.6→9.6.1
-* Java 8→21 (JDK 21 target)
 * Gradle Groovy DSL fixed for compatibility with Gradle 10
 * Added `forkEvery = 1` and per-test timeout to mitigate known NIO selector race condition ([#7](https://github.com/crykn/kryonet/issues/7))
