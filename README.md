@@ -336,3 +336,10 @@ Beyond this documentation page, you may find the following links useful:
    - [Advanced chat server using RMI](examples/com/esotericsoftware/kryonet/examples/chatrmi) (Remote Method Invocation)
    - [A simple "game server"](examples/com/esotericsoftware/kryonet/examples/position) (proof of concept) updating the position of clients
 - [Unit tests](src/test/java/com/esotericsoftware/kryonet)
+
+## Recent Changes
+
+* Dependencies upgraded: Kryo 5.5.0→5.6.2, jsonbeans pin updated with Java 8 fixes, JUnit 5.9.2→5.12.2, Gradle wrapper 7.6→9.6.1
+* Java 8→21 (JDK 21 target)
+* Gradle Groovy DSL fixed for compatibility with Gradle 10
+* Added `forkEvery = 1` and per-test timeout to mitigate known NIO selector race condition ([#7](https://github.com/crykn/kryonet/issues/7))
